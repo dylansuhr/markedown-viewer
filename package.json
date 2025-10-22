@@ -1,0 +1,69 @@
+{
+  "name": "markdown-viewer",
+  "version": "1.0.0",
+  "description": "Simple Markdown Viewer for Mac",
+  "main": "src/main/index.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder",
+    "dist": "electron-builder --mac",
+    "lint": "eslint src/",
+    "lint:fix": "eslint src/ --fix",
+    "format": "prettier --write \"src/**/*.{js,css,html}\"",
+    "format:check": "prettier --check \"src/**/*.{js,css,html}\""
+  },
+  "keywords": [
+    "markdown",
+    "viewer",
+    "editor"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "marked": "^11.2.0"
+  },
+  "devDependencies": {
+    "electron": "^27.3.11",
+    "electron-builder": "^24.6.4",
+    "eslint": "^8.57.1",
+    "prettier": "^3.6.2"
+  },
+  "build": {
+    "appId": "com.yourcompany.markdown-viewer",
+    "productName": "Markdown Viewer",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "src/**/*",
+      "assets/**/*",
+      "resources/**/*"
+    ],
+    "mac": {
+      "category": "public.app-category.developer-tools",
+      "icon": "assets/icons/icon.png",
+      "target": {
+        "target": "dmg",
+        "arch": [
+          "x64",
+          "arm64"
+        ]
+      }
+    },
+    "dmg": {
+      "title": "Markdown Viewer",
+      "contents": [
+        {
+          "x": 130,
+          "y": 220
+        },
+        {
+          "x": 410,
+          "y": 220,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    }
+  }
+}

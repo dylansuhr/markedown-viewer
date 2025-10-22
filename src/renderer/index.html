@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Markdown Viewer</title>
+    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/editor.css" />
+    <link rel="stylesheet" href="css/preview.css" />
+    <script src="../../node_modules/marked/marked.min.js"></script>
+  </head>
+  <body>
+    <div class="toolbar">
+      <button id="editBtn" class="active">Edit</button>
+      <button id="previewBtn">Preview</button>
+      <button id="splitBtn">Split</button>
+      <span class="filename" id="filename">untitled.md</span>
+    </div>
+
+    <div class="container">
+      <div class="editor-pane" id="editorPane">
+        <textarea
+          id="editor"
+          placeholder="Start typing your markdown here...
+
+# Welcome to Markdown Viewer
+
+This is a simple markdown editor. You can:
+- Type markdown in the editor
+- Preview it formatted
+- Save your work
+
+## Features
+- **Bold text** with **
+- *Italic text* with *
+- `Code` with backticks
+- [Links](https://example.com)
+- And much more!"
+        ></textarea>
+      </div>
+      <div class="preview-pane hidden" id="previewPane">
+        <div id="preview"></div>
+      </div>
+    </div>
+
+    <script src="js/services/markdownService.js"></script>
+    <script src="js/services/ipcService.js"></script>
+    <script src="js/components/editor.js"></script>
+    <script src="js/components/preview.js"></script>
+    <script src="js/components/toolbar.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>
