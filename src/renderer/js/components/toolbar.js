@@ -44,6 +44,8 @@ const Toolbar = {
     // Reset panes
     this.editorPane.classList.remove('hidden');
     this.previewPane.classList.remove('hidden');
+    this.editorPane.style.flex = '';
+    this.previewPane.style.flex = '';
 
     switch (mode) {
       case 'edit':

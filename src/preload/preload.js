@@ -36,6 +36,16 @@ contextBridge.exposeInMainWorld('electronAPI', {
   },
 
   /**
+   * Listen for file-saved confirmation
+   * @param {Function} callback - Called with (filePath, filename)
+   */
+  onFileSaved: (callback) => {
+    ipcRenderer.on(IPC_CHANNELS.FILE_SAVED, (_event, filePath, filename) => {
+      callback(filePath, filename);
+    });
+  },
+
+  /**
    * Listen for save file event
    * @param {Function} callback - Called when save is requested
    */
@@ -53,5 +63,21 @@ contextBridge.exposeInMainWorld('electronAPI', {
     ipcRenderer.on(IPC_CHANNELS.SAVE_FILE_AS, (_event, filePath) => {
       callback(filePath);
     });
+  },
+
+  /**
+   * Update the native "document edited" indicator.
+   * @param {boolean} isDirty
+   */
+  setDirtyState: (isDirty) => {
+    ipcRenderer.send(IPC_CHANNELS.SET_DIRTY_STATE, isDirty);
+  },
+
+  /**
+   * Request the main process to open a local file path (e.g., drag-and-drop).
+   * @param {string} filePath
+   */
+  openPath: (filePath) => {
+    ipcRenderer.send(IPC_CHANNELS.REQUEST_OPEN_PATH, filePath);
   },
 });

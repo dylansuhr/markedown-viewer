@@ -46,6 +46,30 @@ function onSaveFileAs(callback) {
   electronAPI.onSaveFileAs(callback);
 }
 
+/**
+ * Register callback for file saved confirmation
+ * @param {Function} callback - Called with (filePath, filename)
+ */
+function onFileSaved(callback) {
+  electronAPI.onFileSaved(callback);
+}
+
+/**
+ * Update dirty state indicator
+ * @param {boolean} isDirty
+ */
+function setDirtyState(isDirty) {
+  electronAPI.setDirtyState(isDirty);
+}
+
+/**
+ * Ask main process to open a specific path (drag-and-drop)
+ * @param {string} filePath
+ */
+function openPath(filePath) {
+  electronAPI.openPath(filePath);
+}
+
 // Expose to window for use by other modules
 window.IPCService = {
   saveFile,
@@ -53,4 +77,7 @@ window.IPCService = {
   onFileOpened,
   onSaveFile,
   onSaveFileAs,
+  onFileSaved,
+  setDirtyState,
+  openPath,
 };

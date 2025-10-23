@@ -68,11 +68,18 @@ A professional, modular macOS desktop app with these core features:
 - [x] Create DEVELOPMENT.md
 - [x] Update README.md with new build instructions
 
-### Phase 8: Build & Distribution ⏳
+### Phase 8: Build & Distribution ✅
 - [x] Update package.json build configuration
 - [x] Test development mode (npm start)
-- [ ] Test production build (npm run build)
-- [ ] Verify .dmg creation
+- [x] Test production build (npm run build)
+- [x] Verify .dmg creation
+
+### Phase 9: macOS Polish ✅
+- [x] Add window state persistence and hidden inset title bar
+- [x] Surface document edited indicator via IPC dirty-channel
+- [x] Wire drag-and-drop, Finder open events, and recent documents menu
+- [x] Expand native menus (App, Window, Help) with macOS-standard roles
+- [x] Introduce icon build script and file associations for `.md` files
 
 ## Folder Structure
 

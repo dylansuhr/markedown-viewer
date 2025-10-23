@@ -6,6 +6,8 @@
 /* global Editor, Preview, Toolbar, IPCService */
 
 const App = {
+  isDirty: false,
+
   /**
    * Initialize the application
    */
@@ -24,6 +26,7 @@ const App = {
     this.updatePreview();
 
     console.log('Markdown Viewer initialized');
+    IPCService.setDirtyState(false);
   },
 
   /**
@@ -36,6 +39,7 @@ const App = {
       if (mode === 'split') {
         this.updatePreview();
       }
+      this.markDirty();
     });
 
     // Handle mode changes
@@ -45,12 +49,16 @@ const App = {
       }
     };
 
+    // Handle native drag-and-drop from Finder
+    this.setupDragAndDrop();
+
     // Handle IPC events from main process
     IPCService.onFileOpened((content, filename) => {
       console.log(`File opened: ${filename}`);
       Editor.setContent(content);
       Toolbar.setFilename(filename);
       this.updatePreview();
+      this.markClean();
     });
 
     IPCService.onSaveFile(() => {
@@ -64,9 +72,19 @@ const App = {
       const content = Editor.getContent();
       IPCService.saveFileAs(content, filePath);
 
-      // Update filename display
-      const filename = filePath.split('/').pop();
-      Toolbar.setFilename(filename);
+      // Optimistically update filename display until confirmation arrives
+      const filename = filePath.split(/[\\/]/).pop();
+      if (filename) {
+        Toolbar.setFilename(filename);
+      }
+    });
+
+    IPCService.onFileSaved((_filePath, filename) => {
+      console.log(`File saved: ${filename}`);
+      if (filename) {
+        Toolbar.setFilename(filename);
+      }
+      this.markClean();
     });
   },
 
@@ -76,6 +94,45 @@ const App = {
   updatePreview() {
     const content = Editor.getContent();
     Preview.update(content);
+  },
+
+  /**
+   * Toggle dirty indicator on
+   */
+  markDirty() {
+    if (!this.isDirty) {
+      this.isDirty = true;
+      IPCService.setDirtyState(true);
+    }
+  },
+
+  /**
+   * Toggle dirty indicator off
+   */
+  markClean() {
+    if (this.isDirty) {
+      this.isDirty = false;
+      IPCService.setDirtyState(false);
+    }
+  },
+
+  setupDragAndDrop() {
+    const handleDragOver = (event) => {
+      event.preventDefault();
+      event.dataTransfer.dropEffect = 'copy';
+    };
+
+    const handleDrop = (event) => {
+      event.preventDefault();
+
+      const [file] = Array.from(event.dataTransfer.files || []);
+      if (file && file.path) {
+        IPCService.openPath(file.path);
+      }
+    };
+
+    document.addEventListener('dragover', handleDragOver);
+    document.addEventListener('drop', handleDrop);
   },
 };
 

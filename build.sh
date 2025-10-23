@@ -9,8 +9,8 @@ if [ ! -d "node_modules" ]; then
 fi
 
 # Build the app without code signing (for distribution outside App Store)
-echo "Building distributable..."
-npm run build -- --mac.identity=null
+echo "Building distributable (unsigned)..."
+npm run build:unsigned
 
 echo ""
 echo "✅ Build complete!"

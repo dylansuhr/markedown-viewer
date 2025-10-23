@@ -5,6 +5,13 @@
 
 /* global marked */
 
+marked.setOptions({
+  gfm: true, // GitHub Flavored Markdown
+  breaks: false, // Don't convert \n to <br>
+  headerIds: true,
+  mangle: false,
+});
+
 /**
  * Parse markdown text to HTML
  * @param {string} markdown - The markdown text
@@ -16,14 +23,6 @@ function parseMarkdown(markdown) {
   }
 
   try {
-    // Configure marked options
-    marked.setOptions({
-      gfm: true, // GitHub Flavored Markdown
-      breaks: false, // Don't convert \n to <br>
-      headerIds: true,
-      mangle: false,
-    });
-
     return marked.parse(markdown);
   } catch (error) {
     console.error('Error parsing markdown:', error);

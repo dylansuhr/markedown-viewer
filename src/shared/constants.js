@@ -8,10 +8,13 @@ const IPC_CHANNELS = {
   FILE_OPENED: 'file-opened',
   SAVE_FILE: 'save-file',
   SAVE_FILE_AS: 'save-file-as',
+  FILE_SAVED: 'file-saved',
 
   // Renderer -> Main
   FILE_CONTENT: 'file-content',
   FILE_CONTENT_SAVE_AS: 'file-content-save-as',
+  SET_DIRTY_STATE: 'set-dirty-state',
+  REQUEST_OPEN_PATH: 'request-open-path',
 };
 
 // View Modes

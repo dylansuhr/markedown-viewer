@@ -31,6 +31,12 @@ Thumbs.db
 *.tmp
 .cache/
 
+# Generated icons
+assets/icons/*.iconset/
+
+# Tooling scripts output
+scripts/*.log
+
 # Environment
 .env
 .env.local

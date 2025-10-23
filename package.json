@@ -5,12 +5,14 @@
   "main": "src/main/index.js",
   "scripts": {
     "start": "electron .",
-    "build": "electron-builder",
+    "build": "npm run check:icons && electron-builder",
+    "build:unsigned": "npm run check:icons && CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --mac",
     "dist": "electron-builder --mac",
     "lint": "eslint src/",
     "lint:fix": "eslint src/ --fix",
     "format": "prettier --write \"src/**/*.{js,css,html}\"",
-    "format:check": "prettier --check \"src/**/*.{js,css,html}\""
+    "format:check": "prettier --check \"src/**/*.{js,css,html}\"",
+    "check:icons": "bash ./scripts/build-icons.sh"
   },
   "keywords": [
     "markdown",
@@ -41,15 +43,31 @@
     ],
     "mac": {
       "category": "public.app-category.developer-tools",
-      "icon": "assets/icons/icon.png",
-      "target": {
-        "target": "dmg",
-        "arch": [
-          "x64",
-          "arm64"
-        ]
-      }
+      "icon": "assets/icons/MarkdownViewer.icns",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ]
     },
+    "fileAssociations": [
+      {
+        "ext": [
+          "md",
+          "markdown",
+          "mdown",
+          "mkd",
+          "mkdn"
+        ],
+        "name": "Markdown Document",
+        "role": "Editor",
+        "icon": "assets/icons/MarkdownViewer.icns"
+      }
+    ],
     "dmg": {
       "title": "Markdown Viewer",
       "contents": [

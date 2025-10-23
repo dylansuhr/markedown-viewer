@@ -12,6 +12,7 @@ A minimalist desktop application for viewing and editing Markdown files on macOS
 - **File Operations**: Open, Save, Save As with keyboard shortcuts
 - **Live Preview**: See changes as you type (in split mode)
 - **Native Mac App**: Follows macOS design guidelines
+- **Finder Integration**: Drag-and-drop, Recent Documents, and double-click `.md` support
 
 ## Installation
 
@@ -45,6 +46,9 @@ A minimalist desktop application for viewing and editing Markdown files on macOS
 
    # Format code
    npm run format
+
+    # Regenerate icon assets (macOS only)
+    npm run check:icons
    ```
 
 6. **Build the distributable app**:
@@ -54,7 +58,7 @@ A minimalist desktop application for viewing and editing Markdown files on macOS
 
    Or if you want to build without code signing:
    ```bash
-   npm run build -- --mac.identity=null
+   npm run build:unsigned
    ```
 
    This will create a `.dmg` file in the `dist` folder that you can distribute.
@@ -68,7 +72,7 @@ This app follows a professional, modular architecture:
 - **src/shared/** - Shared constants and utilities
 - **docs/** - Comprehensive documentation
 
-See `docs/ARCHITECTURE.md` for detailed architecture documentation and `CLAUDE.md` for development guidance.
+See `docs/ARCHITECTURE.md` for detailed architecture documentation and `CONTRIBUTING.md` for day-to-day workflows.
 
 ## Usage
 
@@ -96,7 +100,7 @@ To create a distributable `.dmg` file that others can download and install:
 
 ```bash
 # Without code signing (for personal use)
-npm run build -- --mac.identity=null
+npm run build:unsigned
 
 # With code signing (requires Apple Developer account)
 npm run build
