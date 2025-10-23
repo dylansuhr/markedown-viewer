@@ -195,10 +195,20 @@ async function flushPendingOpenFiles(mainWindow) {
 function extractFilePathsFromArgs(args = []) {
   return (args || [])
     .filter((arg) => arg && !arg.startsWith('-'))
-    .map((arg) => (arg.startsWith('file://') ? new URL(arg).pathname : arg))
+    .map((arg) => {
+      if (arg.startsWith('file://')) {
+        try {
+          return decodeURI(new URL(arg).pathname);
+        } catch {
+          return null;
+        }
+      }
+      return arg;
+    })
+    .filter(Boolean)
     .filter((filePath) => {
       try {
-        return fs.existsSync(filePath);
+        return fs.statSync(filePath).isFile();
       } catch {
         return false;
       }
