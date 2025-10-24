@@ -80,4 +80,43 @@ contextBridge.exposeInMainWorld('electronAPI', {
   openPath: (filePath) => {
     ipcRenderer.send(IPC_CHANNELS.REQUEST_OPEN_PATH, filePath);
   },
+
+  /**
+   * Show error dialog from renderer
+   * @param {Object} options - Error dialog options
+   * @param {string} options.title - Dialog title
+   * @param {string} options.message - Error message
+   * @param {string} options.detail - Detailed error text
+   */
+  showError: (options) => {
+    ipcRenderer.send(IPC_CHANNELS.SHOW_ERROR, options);
+  },
+
+  /**
+   * Listen for theme changes
+   * @param {Function} callback - Called with (isDark)
+   */
+  onThemeChanged: (callback) => {
+    ipcRenderer.on(IPC_CHANNELS.THEME_CHANGED, (_event, isDark) =>
+      callback(isDark)
+    );
+  },
+
+  /**
+   * Listen for view mode changes from menu
+   * @param {Function} callback - Called with (mode)
+   */
+  onSetViewMode: (callback) => {
+    ipcRenderer.on(IPC_CHANNELS.SET_VIEW_MODE, (_event, mode) =>
+      callback(mode)
+    );
+  },
+
+  /**
+   * Share content via native macOS share sheet
+   * @param {string} content - The content to share
+   */
+  shareContent: (content) => {
+    ipcRenderer.send(IPC_CHANNELS.SHARE_CONTENT, content);
+  },
 });

@@ -61,6 +61,32 @@ function buildMenu(handlers) {
         click: handlers.onSaveAs,
       },
       { type: 'separator' },
+      ...(process.platform === 'darwin'
+        ? [
+            {
+              label: 'Share…',
+              click: () => {
+                const { BrowserWindow } = require('electron');
+                const mainWindow = BrowserWindow.getFocusedWindow();
+                if (mainWindow) {
+                  // Request the renderer to send current content for sharing
+                  mainWindow.webContents
+                    .executeJavaScript(
+                      'window.Editor && window.Editor.getContent()'
+                    )
+                    .then((content) => {
+                      if (content) {
+                        const { shareMenu } = require('electron');
+                        const menu = shareMenu({ texts: [content] });
+                        menu.popup({ window: mainWindow });
+                      }
+                    });
+                }
+              },
+            },
+            { type: 'separator' },
+          ]
+        : []),
       {
         role: 'recentdocuments',
         submenu: [{ role: 'clearrecentdocuments' }],
@@ -97,9 +123,50 @@ function buildMenu(handlers) {
   template.push({
     label: 'View',
     submenu: [
-      { role: 'reload' },
-      { role: 'toggleDevTools' },
+      {
+        label: 'Edit Mode',
+        accelerator: 'CmdOrCtrl+1',
+        click: () => {
+          const { BrowserWindow } = require('electron');
+          const mainWindow = BrowserWindow.getFocusedWindow();
+          if (mainWindow) {
+            const { IPC_CHANNELS } = require('../../shared/constants');
+            mainWindow.webContents.send(IPC_CHANNELS.SET_VIEW_MODE, 'edit');
+          }
+        },
+      },
+      {
+        label: 'Preview Mode',
+        accelerator: 'CmdOrCtrl+2',
+        click: () => {
+          const { BrowserWindow } = require('electron');
+          const mainWindow = BrowserWindow.getFocusedWindow();
+          if (mainWindow) {
+            const { IPC_CHANNELS } = require('../../shared/constants');
+            mainWindow.webContents.send(IPC_CHANNELS.SET_VIEW_MODE, 'preview');
+          }
+        },
+      },
+      {
+        label: 'Split Mode',
+        accelerator: 'CmdOrCtrl+3',
+        click: () => {
+          const { BrowserWindow } = require('electron');
+          const mainWindow = BrowserWindow.getFocusedWindow();
+          if (mainWindow) {
+            const { IPC_CHANNELS } = require('../../shared/constants');
+            mainWindow.webContents.send(IPC_CHANNELS.SET_VIEW_MODE, 'split');
+          }
+        },
+      },
       { type: 'separator' },
+      ...(process.env.NODE_ENV === 'development'
+        ? [
+            { role: 'reload' },
+            { role: 'toggleDevTools' },
+            { type: 'separator' },
+          ]
+        : []),
       { role: 'resetZoom' },
       { role: 'zoomIn' },
       { role: 'zoomOut' },
@@ -123,10 +190,21 @@ function buildMenu(handlers) {
     role: 'help',
     submenu: [
       {
-        label: 'Learn More',
+        label: 'Markdown Viewer Help',
         click: async () => {
           const { shell } = require('electron');
-          await shell.openExternal('https://www.electronjs.org');
+          await shell.openExternal(
+            'https://github.com/yourusername/markdown-viewer#readme'
+          );
+        },
+      },
+      {
+        label: 'Report an Issue',
+        click: async () => {
+          const { shell } = require('electron');
+          await shell.openExternal(
+            'https://github.com/yourusername/markdown-viewer/issues'
+          );
         },
       },
     ],

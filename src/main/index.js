@@ -4,7 +4,7 @@
  */
 
 const fs = require('fs');
-const { app, BrowserWindow, dialog } = require('electron');
+const { app, BrowserWindow, dialog, nativeTheme } = require('electron');
 
 // Import modules
 const { createMainWindow, getMainWindow } = require('./window/mainWindow');
@@ -19,7 +19,7 @@ const {
 const dialogService = require('./services/dialogService');
 const logger = require('./utils/logger');
 const { setupGlobalErrorHandlers } = require('./utils/errorHandler');
-const { APP_INFO } = require('../shared/constants');
+const { APP_INFO, IPC_CHANNELS } = require('../shared/constants');
 
 const pendingOpenPaths = new Set();
 let isAppInitialized = false;
@@ -96,10 +96,33 @@ function initializeApp() {
   // Build application menu
   buildMenu(menuHandlers);
 
+  // Setup theme detection
+  setupThemeDetection(mainWindow);
+
   // Open any files queued before the window was ready
   flushPendingOpenFiles(mainWindow);
 
   logger.info('Application initialized successfully');
+}
+
+/**
+ * Setup theme detection and sync with renderer
+ * @param {BrowserWindow} mainWindow
+ */
+function setupThemeDetection(mainWindow) {
+  // Listen for system theme changes
+  nativeTheme.on('updated', () => {
+    const isDark = nativeTheme.shouldUseDarkColors;
+    logger.info(`Theme changed: ${isDark ? 'dark' : 'light'}`);
+    mainWindow.webContents.send(IPC_CHANNELS.THEME_CHANGED, isDark);
+  });
+
+  // Send initial theme on window load
+  mainWindow.webContents.on('did-finish-load', () => {
+    const isDark = nativeTheme.shouldUseDarkColors;
+    logger.info(`Sending initial theme: ${isDark ? 'dark' : 'light'}`);
+    mainWindow.webContents.send(IPC_CHANNELS.THEME_CHANGED, isDark);
+  });
 }
 
 // App event handlers
@@ -195,10 +218,20 @@ async function flushPendingOpenFiles(mainWindow) {
 function extractFilePathsFromArgs(args = []) {
   return (args || [])
     .filter((arg) => arg && !arg.startsWith('-'))
-    .map((arg) => (arg.startsWith('file://') ? new URL(arg).pathname : arg))
+    .map((arg) => {
+      if (arg.startsWith('file://')) {
+        try {
+          return decodeURI(new URL(arg).pathname);
+        } catch {
+          return null;
+        }
+      }
+      return arg;
+    })
+    .filter(Boolean)
     .filter((filePath) => {
       try {
-        return fs.existsSync(filePath);
+        return fs.statSync(filePath).isFile();
       } catch {
         return false;
       }
@@ -215,11 +248,25 @@ function configureAboutPanel() {
     return;
   }
 
+  const path = require('path');
+
   app.setAboutPanelOptions({
     applicationName: APP_INFO.NAME,
     applicationVersion: app.getVersion(),
-    version: app.getVersion(),
-    credits: 'Markdown Viewer — crafted for macOS markdown editing.',
-    authors: ['Markdown Viewer Contributors'],
+    version: `Version ${app.getVersion()}`,
+    copyright: `Copyright © ${new Date().getFullYear()} Markdown Viewer Contributors`,
+    credits:
+      'A lightweight, native markdown editor for macOS.\n\n' +
+      'Built with Electron and designed to integrate seamlessly with macOS.\n\n' +
+      'Features:\n' +
+      '• Native macOS UI with dark mode support\n' +
+      '• Real-time markdown preview\n' +
+      '• Keyboard shortcuts (⌘1/2/3 for view modes)\n' +
+      '• File associations and drag-and-drop\n' +
+      '• Native share sheet integration\n\n' +
+      'Visit our website for documentation and support.',
+    iconPath: path.join(__dirname, '../../assets/icons/icon.png'),
   });
+
+  logger.info('About panel configured');
 }

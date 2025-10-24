@@ -70,6 +70,41 @@ function openPath(filePath) {
   electronAPI.openPath(filePath);
 }
 
+/**
+ * Show error dialog
+ * @param {Object} options - Error dialog options
+ * @param {string} options.title - Dialog title
+ * @param {string} options.message - Error message
+ * @param {string} options.detail - Detailed error text
+ */
+function showError(options) {
+  electronAPI.showError(options);
+}
+
+/**
+ * Register callback for theme changes
+ * @param {Function} callback - Called with (isDark)
+ */
+function onThemeChanged(callback) {
+  electronAPI.onThemeChanged(callback);
+}
+
+/**
+ * Register callback for view mode changes from menu
+ * @param {Function} callback - Called with (mode)
+ */
+function onSetViewMode(callback) {
+  electronAPI.onSetViewMode(callback);
+}
+
+/**
+ * Share content via native macOS share sheet
+ * @param {string} content - The content to share
+ */
+function shareContent(content) {
+  electronAPI.shareContent(content);
+}
+
 // Expose to window for use by other modules
 window.IPCService = {
   saveFile,
@@ -80,4 +115,8 @@ window.IPCService = {
   onFileSaved,
   setDirtyState,
   openPath,
+  showError,
+  onThemeChanged,
+  onSetViewMode,
+  shareContent,
 };

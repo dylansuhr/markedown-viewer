@@ -3,7 +3,7 @@
  * Coordinates all renderer components
  */
 
-/* global Editor, Preview, Toolbar, IPCService */
+/* global Editor, Preview, Toolbar, IPCService, SplitViewResizer */
 
 const App = {
   isDirty: false,
@@ -18,6 +18,7 @@ const App = {
     Editor.init();
     Preview.init();
     Toolbar.init();
+    SplitViewResizer.init();
 
     // Setup event handlers
     this.setupEventHandlers();
@@ -33,6 +34,18 @@ const App = {
    * Setup all event handlers
    */
   setupEventHandlers() {
+    // Handle theme changes
+    IPCService.onThemeChanged((isDark) => {
+      console.log(`Theme changed: ${isDark ? 'dark' : 'light'}`);
+      document.body.classList.toggle('dark-mode', isDark);
+    });
+
+    // Handle view mode changes from menu shortcuts
+    IPCService.onSetViewMode((mode) => {
+      console.log(`View mode changed via menu: ${mode}`);
+      Toolbar.setMode(mode);
+    });
+
     // Handle editor input
     Editor.onInput(() => {
       const mode = Toolbar.getMode();
@@ -117,22 +130,62 @@ const App = {
   },
 
   setupDragAndDrop() {
+    // Supported file extensions (synchronized with constants.js)
+    const VALID_EXTENSIONS = [
+      '.md',
+      '.markdown',
+      '.mdown',
+      '.mkd',
+      '.mkdn',
+      '.txt',
+      '.text',
+      '.html',
+      '.htm',
+      '.json',
+      '.mdx',
+      '.rmd',
+      '.adoc',
+    ];
+
     const handleDragOver = (event) => {
       event.preventDefault();
-      event.dataTransfer.dropEffect = 'copy';
+      const hasFiles = event.dataTransfer.items?.length > 0;
+      event.dataTransfer.dropEffect = hasFiles ? 'copy' : 'none';
     };
 
     const handleDrop = (event) => {
       event.preventDefault();
 
       const [file] = Array.from(event.dataTransfer.files || []);
-      if (file && file.path) {
-        IPCService.openPath(file.path);
+      if (!file || !file.path) {
+        return;
       }
+
+      // Validate file extension (normalized to lowercase)
+      const ext = file.path.toLowerCase().match(/\.[^.]+$/)?.[0];
+      if (!VALID_EXTENSIONS.includes(ext)) {
+        this.showInvalidFileError(file.name, ext);
+        return;
+      }
+
+      IPCService.openPath(file.path);
     };
 
     document.addEventListener('dragover', handleDragOver);
     document.addEventListener('drop', handleDrop);
+  },
+
+  /**
+   * Show error for invalid file type
+   * @param {string} filename - Name of invalid file
+   * @param {string} ext - File extension
+   */
+  showInvalidFileError(filename, ext) {
+    IPCService.showError({
+      title: 'Unsupported File Type',
+      message: `Cannot open "${filename}"`,
+      detail: `Markdown Viewer supports markdown (.md, .markdown, .mdx), text (.txt), HTML (.html), and other markup formats. The file you selected has extension: ${ext || 'unknown'}`,
+    });
   },
 };
 

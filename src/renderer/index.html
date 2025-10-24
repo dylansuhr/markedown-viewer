@@ -10,9 +10,11 @@
   </head>
   <body>
     <div class="toolbar">
-      <button id="editBtn" class="active">Edit</button>
-      <button id="previewBtn">Preview</button>
-      <button id="splitBtn">Split</button>
+      <div class="toolbar-buttons">
+        <button id="editBtn" class="active">Edit</button>
+        <button id="previewBtn">Preview</button>
+        <button id="splitBtn">Split</button>
+      </div>
       <span class="filename" id="filename">untitled.md</span>
     </div>
 
@@ -28,6 +30,7 @@ This is a simple markdown editor. You can:
 - Type markdown in the editor
 - Preview it formatted
 - Save your work
+- ADDING THIS LINE TO TEST REFRESH
 
 ## Features
 - **Bold text** with **
@@ -37,6 +40,17 @@ This is a simple markdown editor. You can:
 - And much more!"
         ></textarea>
       </div>
+      <div
+        class="divider hidden"
+        id="divider"
+        role="separator"
+        aria-orientation="vertical"
+        aria-label="Resize split panes"
+        aria-valuemin="20"
+        aria-valuemax="80"
+        aria-valuenow="50"
+        tabindex="0"
+      ></div>
       <div class="preview-pane hidden" id="previewPane">
         <div id="preview"></div>
       </div>
@@ -47,6 +61,7 @@ This is a simple markdown editor. You can:
     <script src="js/components/editor.js"></script>
     <script src="js/components/preview.js"></script>
     <script src="js/components/toolbar.js"></script>
+    <script src="js/components/splitViewResizer.js"></script>
     <script src="js/app.js"></script>
   </body>
 </html>
