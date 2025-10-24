@@ -80,4 +80,15 @@ contextBridge.exposeInMainWorld('electronAPI', {
   openPath: (filePath) => {
     ipcRenderer.send(IPC_CHANNELS.REQUEST_OPEN_PATH, filePath);
   },
+
+  /**
+   * Show error dialog from renderer
+   * @param {Object} options - Error dialog options
+   * @param {string} options.title - Dialog title
+   * @param {string} options.message - Error message
+   * @param {string} options.detail - Detailed error text
+   */
+  showError: (options) => {
+    ipcRenderer.send(IPC_CHANNELS.SHOW_ERROR, options);
+  },
 });

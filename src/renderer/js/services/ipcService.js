@@ -70,6 +70,17 @@ function openPath(filePath) {
   electronAPI.openPath(filePath);
 }
 
+/**
+ * Show error dialog
+ * @param {Object} options - Error dialog options
+ * @param {string} options.title - Dialog title
+ * @param {string} options.message - Error message
+ * @param {string} options.detail - Detailed error text
+ */
+function showError(options) {
+  electronAPI.showError(options);
+}
+
 // Expose to window for use by other modules
 window.IPCService = {
   saveFile,
@@ -80,4 +91,5 @@ window.IPCService = {
   onFileSaved,
   setDirtyState,
   openPath,
+  showError,
 };

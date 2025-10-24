@@ -15,6 +15,7 @@ const IPC_CHANNELS = {
   FILE_CONTENT_SAVE_AS: 'file-content-save-as',
   SET_DIRTY_STATE: 'set-dirty-state',
   REQUEST_OPEN_PATH: 'request-open-path',
+  SHOW_ERROR: 'show-error',
 };
 
 // View Modes
@@ -24,15 +25,73 @@ const VIEW_MODES = {
   SPLIT: 'split',
 };
 
-// File Filters
+// Supported UTIs (Uniform Type Identifiers) for macOS
+const SUPPORTED_UTIS = {
+  MARKDOWN: [
+    'net.daringfireball.markdown', // Official markdown UTI
+    'public.markdown', // Generic markdown
+  ],
+  TEXT: [
+    'public.plain-text', // Plain text files
+    'public.text', // Generic text
+  ],
+  MARKUP: [
+    'public.html', // HTML files
+    'public.json', // JSON files
+  ],
+  EXTENDED: [
+    'io.typora.mdx', // MDX files
+  ],
+};
+
+// Normalized extension list (for validation across all entry points)
+const VALID_EXTENSIONS = [
+  '.md',
+  '.markdown',
+  '.mdown',
+  '.mkd',
+  '.mkdn', // Standard markdown
+  '.txt',
+  '.text', // Plain text
+  '.html',
+  '.htm', // HTML
+  '.json', // JSON
+  '.mdx', // MDX
+  '.rmd', // R Markdown
+  '.adoc', // AsciiDoc
+];
+
+// File Filters (synchronized with VALID_EXTENSIONS)
 const FILE_FILTERS = {
   MARKDOWN: {
     name: 'Markdown Files',
-    extensions: ['md', 'markdown', 'mdown', 'mkd', 'mkdn'],
+    extensions: ['md', 'markdown', 'mdown', 'mkd', 'mkdn', 'mdx', 'rmd'],
+  },
+  TEXT: {
+    name: 'Text Files',
+    extensions: ['txt', 'text'],
+  },
+  MARKUP: {
+    name: 'Markup Files',
+    extensions: ['html', 'htm', 'json', 'adoc'],
   },
   ALL: {
-    name: 'All Files',
-    extensions: ['*'],
+    name: 'All Supported Files',
+    extensions: [
+      'md',
+      'markdown',
+      'mdown',
+      'mkd',
+      'mkdn',
+      'txt',
+      'text',
+      'html',
+      'htm',
+      'json',
+      'mdx',
+      'rmd',
+      'adoc',
+    ],
   },
 };
 
@@ -56,4 +115,6 @@ module.exports = {
   FILE_FILTERS,
   WINDOW_CONFIG,
   APP_INFO,
+  SUPPORTED_UTIS,
+  VALID_EXTENSIONS,
 };

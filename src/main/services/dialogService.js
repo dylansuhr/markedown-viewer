@@ -18,7 +18,12 @@ async function showOpenDialog(window) {
 
     const result = await dialog.showOpenDialog(window, {
       properties: ['openFile'],
-      filters: [FILE_FILTERS.MARKDOWN, FILE_FILTERS.ALL],
+      filters: [
+        FILE_FILTERS.MARKDOWN,
+        FILE_FILTERS.TEXT,
+        FILE_FILTERS.MARKUP,
+        FILE_FILTERS.ALL,
+      ],
     });
 
     if (result.canceled || result.filePaths.length === 0) {
@@ -47,7 +52,12 @@ async function showSaveDialog(window, defaultPath = 'untitled.md') {
 
     const result = await dialog.showSaveDialog(window, {
       defaultPath,
-      filters: [FILE_FILTERS.MARKDOWN, FILE_FILTERS.ALL],
+      filters: [
+        FILE_FILTERS.MARKDOWN,
+        FILE_FILTERS.TEXT,
+        FILE_FILTERS.MARKUP,
+        FILE_FILTERS.ALL,
+      ],
     });
 
     if (result.canceled || !result.filePath) {

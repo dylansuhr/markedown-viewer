@@ -122,6 +122,19 @@ function setupIpcHandlers(mainWindow) {
     }
   });
 
+  // Handle error dialog requests from renderer
+  ipcMain.on(IPC_CHANNELS.SHOW_ERROR, (_event, options) => {
+    if (!mainWindowRef || mainWindowRef.isDestroyed()) return;
+
+    dialog.showMessageBox(mainWindowRef, {
+      type: 'error',
+      buttons: ['OK'],
+      title: options.title || 'Error',
+      message: options.message || 'An error occurred',
+      detail: options.detail || '',
+    });
+  });
+
   logger.info('IPC handlers set up successfully');
 }
 

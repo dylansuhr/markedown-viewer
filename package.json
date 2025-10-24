@@ -53,7 +53,27 @@
             "arm64"
           ]
         }
-      ]
+      ],
+      "extendInfo": {
+        "UTImportedTypeDeclarations": [
+          {
+            "UTTypeIdentifier": "net.daringfireball.markdown",
+            "UTTypeConformsTo": [
+              "public.text"
+            ],
+            "UTTypeTagSpecification": {
+              "public.filename-extension": [
+                "md",
+                "markdown",
+                "mdown",
+                "mkd",
+                "mkdn"
+              ]
+            },
+            "UTTypeDescription": "Markdown Document"
+          }
+        ]
+      }
     },
     "fileAssociations": [
       {
@@ -62,9 +82,20 @@
           "markdown",
           "mdown",
           "mkd",
-          "mkdn"
+          "mkdn",
+          "mdx",
+          "rmd"
         ],
         "name": "Markdown Document",
+        "role": "Editor",
+        "icon": "assets/icons/MarkdownViewer.icns"
+      },
+      {
+        "ext": [
+          "txt",
+          "text"
+        ],
+        "name": "Text Document",
         "role": "Editor",
         "icon": "assets/icons/MarkdownViewer.icns"
       }
