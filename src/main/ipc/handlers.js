@@ -135,6 +135,38 @@ function setupIpcHandlers(mainWindow) {
     });
   });
 
+  // Handle share content request (macOS only)
+  ipcMain.on(IPC_CHANNELS.SHARE_CONTENT, async (_event, content) => {
+    if (process.platform !== 'darwin') {
+      logger.warn('Share sheet is only available on macOS');
+      return;
+    }
+
+    if (!mainWindowRef || mainWindowRef.isDestroyed()) {
+      logger.error('Cannot share: main window not available');
+      return;
+    }
+
+    try {
+      logger.info('Sharing content via native share sheet');
+      const { shareMenu } = require('electron');
+
+      // Create share menu with the content
+      const menu = shareMenu({
+        texts: [content],
+      });
+
+      // Show the share menu at cursor position
+      menu.popup({
+        window: mainWindowRef,
+      });
+
+      logger.info('Share menu displayed successfully');
+    } catch (error) {
+      logger.error('Error showing share menu:', error);
+    }
+  });
+
   logger.info('IPC handlers set up successfully');
 }
 

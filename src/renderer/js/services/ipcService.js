@@ -97,6 +97,14 @@ function onSetViewMode(callback) {
   electronAPI.onSetViewMode(callback);
 }
 
+/**
+ * Share content via native macOS share sheet
+ * @param {string} content - The content to share
+ */
+function shareContent(content) {
+  electronAPI.shareContent(content);
+}
+
 // Expose to window for use by other modules
 window.IPCService = {
   saveFile,
@@ -110,4 +118,5 @@ window.IPCService = {
   showError,
   onThemeChanged,
   onSetViewMode,
+  shareContent,
 };

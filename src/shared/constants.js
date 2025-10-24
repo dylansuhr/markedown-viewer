@@ -22,6 +22,9 @@ const IPC_CHANNELS = {
 
   // View Mode
   SET_VIEW_MODE: 'set-view-mode',
+
+  // Share
+  SHARE_CONTENT: 'share-content',
 };
 
 // View Modes

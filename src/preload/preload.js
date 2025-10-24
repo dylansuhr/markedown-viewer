@@ -111,4 +111,12 @@ contextBridge.exposeInMainWorld('electronAPI', {
       callback(mode)
     );
   },
+
+  /**
+   * Share content via native macOS share sheet
+   * @param {string} content - The content to share
+   */
+  shareContent: (content) => {
+    ipcRenderer.send(IPC_CHANNELS.SHARE_CONTENT, content);
+  },
 });

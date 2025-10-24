@@ -61,6 +61,30 @@ function buildMenu(handlers) {
         click: handlers.onSaveAs,
       },
       { type: 'separator' },
+      ...(process.platform === 'darwin'
+        ? [
+            {
+              label: 'Share…',
+              click: () => {
+                const { BrowserWindow } = require('electron');
+                const mainWindow = BrowserWindow.getFocusedWindow();
+                if (mainWindow) {
+                  // Request the renderer to send current content for sharing
+                  mainWindow.webContents.executeJavaScript(
+                    'window.Editor && window.Editor.getContent()'
+                  ).then((content) => {
+                    if (content) {
+                      const { shareMenu } = require('electron');
+                      const menu = shareMenu({ texts: [content] });
+                      menu.popup({ window: mainWindow });
+                    }
+                  });
+                }
+              },
+            },
+            { type: 'separator' },
+          ]
+        : []),
       {
         role: 'recentdocuments',
         submenu: [{ role: 'clearrecentdocuments' }],
