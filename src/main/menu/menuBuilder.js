@@ -70,15 +70,17 @@ function buildMenu(handlers) {
                 const mainWindow = BrowserWindow.getFocusedWindow();
                 if (mainWindow) {
                   // Request the renderer to send current content for sharing
-                  mainWindow.webContents.executeJavaScript(
-                    'window.Editor && window.Editor.getContent()'
-                  ).then((content) => {
-                    if (content) {
-                      const { shareMenu } = require('electron');
-                      const menu = shareMenu({ texts: [content] });
-                      menu.popup({ window: mainWindow });
-                    }
-                  });
+                  mainWindow.webContents
+                    .executeJavaScript(
+                      'window.Editor && window.Editor.getContent()'
+                    )
+                    .then((content) => {
+                      if (content) {
+                        const { shareMenu } = require('electron');
+                        const menu = shareMenu({ texts: [content] });
+                        menu.popup({ window: mainWindow });
+                      }
+                    });
                 }
               },
             },
