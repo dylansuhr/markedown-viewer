@@ -19,40 +19,71 @@ body {
 }
 
 .toolbar {
-  background: #ffffff;
-  border-bottom: 1px solid #e0e0e0;
+  background: linear-gradient(to bottom, #fafafa, #f0f0f0);
+  border-bottom: 1px solid #d0d0d0;
   padding: 10px 10px 10px 80px; /* Left padding for traffic lights */
   display: flex;
-  gap: 10px;
+  gap: 0;
   align-items: center;
   -webkit-app-region: drag;
   height: 44px; /* Standard macOS toolbar height */
 }
 
-.toolbar button {
-  padding: 6px 12px;
-  background: #007aff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
+.toolbar-buttons {
+  display: flex;
+  gap: 0;
+  border: 1px solid #c0c0c0;
+  border-radius: 6px;
+  overflow: hidden;
+  background: white;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   -webkit-app-region: no-drag;
 }
 
+.toolbar button {
+  padding: 6px 16px;
+  background: white;
+  color: #333;
+  border: none;
+  border-right: 1px solid #e0e0e0;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: background 0.1s ease;
+  -webkit-app-region: no-drag;
+  outline: none;
+}
+
+.toolbar button:last-child {
+  border-right: none;
+}
+
 .toolbar button:hover {
-  background: #0056b3;
+  background: #f5f5f5;
+}
+
+.toolbar button:active {
+  background: #e8e8e8;
 }
 
 .toolbar button.active {
-  background: #0056b3;
+  background: #007aff;
+  color: white;
+}
+
+.toolbar button:focus-visible {
+  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.3);
+  z-index: 1;
+  position: relative;
 }
 
 .toolbar .filename {
   margin-left: auto;
   color: #666;
-  font-size: 14px;
+  font-size: 13px;
+  font-weight: 500;
   -webkit-app-region: no-drag;
+  padding-right: 10px;
 }
 
 .container {

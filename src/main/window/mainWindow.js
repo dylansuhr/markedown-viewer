@@ -47,6 +47,11 @@ function createMainWindow() {
 
   mainWindow = new BrowserWindow(windowOptions);
 
+  // Enable fullscreen support on macOS
+  if (os.platform() === 'darwin') {
+    mainWindow.setFullScreenable(true);
+  }
+
   // Load the index.html
   const indexPath = path.join(__dirname, '../../renderer/index.html');
   mainWindow.loadFile(indexPath);

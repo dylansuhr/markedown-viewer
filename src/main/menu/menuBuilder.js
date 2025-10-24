@@ -97,9 +97,13 @@ function buildMenu(handlers) {
   template.push({
     label: 'View',
     submenu: [
-      { role: 'reload' },
-      { role: 'toggleDevTools' },
-      { type: 'separator' },
+      ...(process.env.NODE_ENV === 'development'
+        ? [
+            { role: 'reload' },
+            { role: 'toggleDevTools' },
+            { type: 'separator' },
+          ]
+        : []),
       { role: 'resetZoom' },
       { role: 'zoomIn' },
       { role: 'zoomOut' },
@@ -123,10 +127,21 @@ function buildMenu(handlers) {
     role: 'help',
     submenu: [
       {
-        label: 'Learn More',
+        label: 'Markdown Viewer Help',
         click: async () => {
           const { shell } = require('electron');
-          await shell.openExternal('https://www.electronjs.org');
+          await shell.openExternal(
+            'https://github.com/yourusername/markdown-viewer#readme'
+          );
+        },
+      },
+      {
+        label: 'Report an Issue',
+        click: async () => {
+          const { shell } = require('electron');
+          await shell.openExternal(
+            'https://github.com/yourusername/markdown-viewer/issues'
+          );
         },
       },
     ],
