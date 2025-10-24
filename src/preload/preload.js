@@ -91,4 +91,14 @@ contextBridge.exposeInMainWorld('electronAPI', {
   showError: (options) => {
     ipcRenderer.send(IPC_CHANNELS.SHOW_ERROR, options);
   },
+
+  /**
+   * Listen for theme changes
+   * @param {Function} callback - Called with (isDark)
+   */
+  onThemeChanged: (callback) => {
+    ipcRenderer.on(IPC_CHANNELS.THEME_CHANGED, (_event, isDark) =>
+      callback(isDark)
+    );
+  },
 });

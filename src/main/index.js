@@ -4,7 +4,7 @@
  */
 
 const fs = require('fs');
-const { app, BrowserWindow, dialog } = require('electron');
+const { app, BrowserWindow, dialog, nativeTheme } = require('electron');
 
 // Import modules
 const { createMainWindow, getMainWindow } = require('./window/mainWindow');
@@ -19,7 +19,7 @@ const {
 const dialogService = require('./services/dialogService');
 const logger = require('./utils/logger');
 const { setupGlobalErrorHandlers } = require('./utils/errorHandler');
-const { APP_INFO } = require('../shared/constants');
+const { APP_INFO, IPC_CHANNELS } = require('../shared/constants');
 
 const pendingOpenPaths = new Set();
 let isAppInitialized = false;
@@ -96,10 +96,33 @@ function initializeApp() {
   // Build application menu
   buildMenu(menuHandlers);
 
+  // Setup theme detection
+  setupThemeDetection(mainWindow);
+
   // Open any files queued before the window was ready
   flushPendingOpenFiles(mainWindow);
 
   logger.info('Application initialized successfully');
+}
+
+/**
+ * Setup theme detection and sync with renderer
+ * @param {BrowserWindow} mainWindow
+ */
+function setupThemeDetection(mainWindow) {
+  // Listen for system theme changes
+  nativeTheme.on('updated', () => {
+    const isDark = nativeTheme.shouldUseDarkColors;
+    logger.info(`Theme changed: ${isDark ? 'dark' : 'light'}`);
+    mainWindow.webContents.send(IPC_CHANNELS.THEME_CHANGED, isDark);
+  });
+
+  // Send initial theme on window load
+  mainWindow.webContents.on('did-finish-load', () => {
+    const isDark = nativeTheme.shouldUseDarkColors;
+    logger.info(`Sending initial theme: ${isDark ? 'dark' : 'light'}`);
+    mainWindow.webContents.send(IPC_CHANNELS.THEME_CHANGED, isDark);
+  });
 }
 
 // App event handlers

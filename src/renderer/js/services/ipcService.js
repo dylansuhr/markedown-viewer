@@ -81,6 +81,14 @@ function showError(options) {
   electronAPI.showError(options);
 }
 
+/**
+ * Register callback for theme changes
+ * @param {Function} callback - Called with (isDark)
+ */
+function onThemeChanged(callback) {
+  electronAPI.onThemeChanged(callback);
+}
+
 // Expose to window for use by other modules
 window.IPCService = {
   saveFile,
@@ -92,4 +100,5 @@ window.IPCService = {
   setDirtyState,
   openPath,
   showError,
+  onThemeChanged,
 };

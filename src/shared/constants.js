@@ -16,6 +16,9 @@ const IPC_CHANNELS = {
   SET_DIRTY_STATE: 'set-dirty-state',
   REQUEST_OPEN_PATH: 'request-open-path',
   SHOW_ERROR: 'show-error',
+
+  // Theme
+  THEME_CHANGED: 'theme-changed',
 };
 
 // View Modes

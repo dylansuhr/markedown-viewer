@@ -11,14 +11,14 @@
 #preview h1 {
   font-size: 2em;
   margin: 0.67em 0;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--border-color);
   padding-bottom: 0.3em;
 }
 
 #preview h2 {
   font-size: 1.5em;
   margin: 0.75em 0;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--border-color);
   padding-bottom: 0.3em;
 }
 
@@ -49,12 +49,12 @@
 #preview blockquote {
   margin: 1em 0;
   padding: 0 1em;
-  border-left: 4px solid #ddd;
-  color: #666;
+  border-left: 4px solid var(--border-color);
+  color: var(--text-secondary);
 }
 
 #preview code {
-  background: #f4f4f4;
+  background: var(--code-bg);
   padding: 2px 4px;
   border-radius: 3px;
   font-family: 'SF Mono', Monaco, 'Courier New', monospace;
@@ -62,7 +62,7 @@
 }
 
 #preview pre {
-  background: #f4f4f4;
+  background: var(--code-bg);
   padding: 1em;
   border-radius: 5px;
   overflow-x: auto;
@@ -85,7 +85,7 @@
 }
 
 #preview a {
-  color: #007aff;
+  color: var(--link-color);
   text-decoration: none;
 }
 
@@ -100,7 +100,7 @@
 
 #preview hr {
   border: none;
-  border-top: 1px solid #eee;
+  border-top: 1px solid var(--border-color);
   margin: 2em 0;
 }
 
@@ -112,11 +112,11 @@
 
 #preview th,
 #preview td {
-  border: 1px solid #ddd;
+  border: 1px solid var(--border-color);
   padding: 8px;
   text-align: left;
 }
 
 #preview th {
-  background: #f4f4f4;
+  background: var(--code-bg);
 }

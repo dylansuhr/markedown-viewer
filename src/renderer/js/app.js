@@ -34,6 +34,12 @@ const App = {
    * Setup all event handlers
    */
   setupEventHandlers() {
+    // Handle theme changes
+    IPCService.onThemeChanged((isDark) => {
+      console.log(`Theme changed: ${isDark ? 'dark' : 'light'}`);
+      document.body.classList.toggle('dark-mode', isDark);
+    });
+
     // Handle editor input
     Editor.onInput(() => {
       const mode = Toolbar.getMode();
