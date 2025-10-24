@@ -3,7 +3,7 @@
  * Coordinates all renderer components
  */
 
-/* global Editor, Preview, Toolbar, IPCService */
+/* global Editor, Preview, Toolbar, IPCService, SplitViewResizer */
 
 const App = {
   isDirty: false,
@@ -18,6 +18,7 @@ const App = {
     Editor.init();
     Preview.init();
     Toolbar.init();
+    SplitViewResizer.init();
 
     // Setup event handlers
     this.setupEventHandlers();

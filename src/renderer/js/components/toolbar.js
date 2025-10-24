@@ -10,6 +10,7 @@ const Toolbar = {
   filenameSpan: null,
   editorPane: null,
   previewPane: null,
+  divider: null,
   currentMode: 'edit',
 
   /**
@@ -22,6 +23,7 @@ const Toolbar = {
     this.filenameSpan = document.getElementById('filename');
     this.editorPane = document.getElementById('editorPane');
     this.previewPane = document.getElementById('previewPane');
+    this.divider = document.getElementById('divider');
 
     // Setup event listeners
     this.editBtn.addEventListener('click', () => this.setMode('edit'));
@@ -44,6 +46,7 @@ const Toolbar = {
     // Reset panes
     this.editorPane.classList.remove('hidden');
     this.previewPane.classList.remove('hidden');
+    this.divider.classList.remove('hidden');
     this.editorPane.style.flex = '';
     this.previewPane.style.flex = '';
 
@@ -51,18 +54,27 @@ const Toolbar = {
       case 'edit':
         this.editBtn.classList.add('active');
         this.previewPane.classList.add('hidden');
+        this.divider.classList.add('hidden');
         this.editorPane.style.flex = '1';
         break;
       case 'preview':
         this.previewBtn.classList.add('active');
         this.editorPane.classList.add('hidden');
+        this.divider.classList.add('hidden');
         this.previewPane.style.flex = '1';
         break;
-      case 'split':
+      case 'split': {
         this.splitBtn.classList.add('active');
         this.editorPane.style.flex = '1';
         this.previewPane.style.flex = '1';
+        // Restore saved split ratio if available
+        const savedRatio = localStorage.getItem('splitRatio');
+        if (savedRatio) {
+          this.editorPane.style.flex = `0 0 ${parseFloat(savedRatio) * 100}%`;
+          this.previewPane.style.flex = `1`;
+        }
         break;
+      }
     }
 
     // Notify mode change

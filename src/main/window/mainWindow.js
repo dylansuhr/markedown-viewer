@@ -51,8 +51,9 @@ function createMainWindow() {
   const indexPath = path.join(__dirname, '../../renderer/index.html');
   mainWindow.loadFile(indexPath);
 
-  // Open DevTools in development
-  if (process.env.NODE_ENV === 'development') {
+  // Open DevTools in development (double-guard for safety)
+  const { app } = require('electron');
+  if (!app.isPackaged && process.env.NODE_ENV === 'development') {
     mainWindow.webContents.openDevTools();
   }
 

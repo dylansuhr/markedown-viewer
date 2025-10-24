@@ -4,7 +4,7 @@
   "description": "Simple Markdown Viewer for Mac",
   "main": "src/main/index.js",
   "scripts": {
-    "start": "electron .",
+    "start": "cross-env NODE_ENV=development electron .",
     "build": "npm run check:icons && electron-builder",
     "build:unsigned": "npm run check:icons && CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --mac",
     "dist": "electron-builder --mac",
@@ -25,6 +25,7 @@
     "marked": "^11.2.0"
   },
   "devDependencies": {
+    "cross-env": "^10.1.0",
     "electron": "^27.3.11",
     "electron-builder": "^24.6.4",
     "eslint": "^8.57.1",

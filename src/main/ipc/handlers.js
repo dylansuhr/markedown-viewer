@@ -3,7 +3,7 @@
  * Handles communication from renderer process
  */
 
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const { IPC_CHANNELS } = require('../../shared/constants');
 const fileService = require('../services/fileService');
 const logger = require('../utils/logger');
@@ -29,15 +29,38 @@ function setupIpcHandlers(mainWindow) {
   // Handle file content for save operation
   ipcMain.on(IPC_CHANNELS.FILE_CONTENT, async (event, content) => {
     try {
-      if (currentFile) {
-        logger.info(`Saving file: ${currentFile}`);
-        await fileService.writeFile(currentFile, content);
-        notifyFileSaved(currentFile);
-      } else {
-        logger.warn('Save requested but no current file set');
+      logger.info(`FILE_CONTENT handler triggered`);
+      logger.info(`  Content length: ${content?.length ?? 'undefined'}`);
+      logger.info(`  Current file: ${currentFile ?? 'undefined'}`);
+
+      if (!currentFile) {
+        logger.error('FILE_CONTENT: No current file set');
+        showSaveError(
+          mainWindowRef,
+          'No file to save. Please use "Save As" to create a new file.'
+        );
+        if (mainWindowRef) mainWindowRef.setDocumentEdited(true);
+        return;
       }
+
+      if (content === undefined || content === null) {
+        logger.error('FILE_CONTENT: content is missing');
+        showSaveError(mainWindowRef, 'No content to save');
+        if (mainWindowRef) mainWindowRef.setDocumentEdited(true);
+        return;
+      }
+
+      logger.info(`Saving file: ${currentFile}`);
+      await fileService.writeFile(currentFile, content);
+      logger.info(`File written successfully: ${currentFile}`);
+      notifyFileSaved(currentFile);
     } catch (error) {
       logger.error('Error in FILE_CONTENT handler:', error);
+      logger.error('Error stack:', error.stack);
+
+      // Show user-facing error and keep dirty flag
+      showSaveError(mainWindowRef, error.message);
+      if (mainWindowRef) mainWindowRef.setDocumentEdited(true);
     }
   });
 
@@ -46,12 +69,37 @@ function setupIpcHandlers(mainWindow) {
     IPC_CHANNELS.FILE_CONTENT_SAVE_AS,
     async (_event, content, filePath) => {
       try {
+        logger.info(`FILE_CONTENT_SAVE_AS handler triggered`);
+        logger.info(`  Content length: ${content?.length ?? 'undefined'}`);
+        logger.info(`  File path: ${filePath ?? 'undefined'}`);
+
+        if (!filePath) {
+          logger.error('FILE_CONTENT_SAVE_AS: filePath is missing');
+          showSaveError(mainWindowRef, 'No file path provided');
+          if (mainWindowRef) mainWindowRef.setDocumentEdited(true);
+          return;
+        }
+
+        if (content === undefined || content === null) {
+          logger.error('FILE_CONTENT_SAVE_AS: content is missing');
+          showSaveError(mainWindowRef, 'No content to save');
+          if (mainWindowRef) mainWindowRef.setDocumentEdited(true);
+          return;
+        }
+
         logger.info(`Saving file as: ${filePath}`);
         await fileService.writeFile(filePath, content);
+        logger.info(`File written successfully: ${filePath}`);
+
         currentFile = filePath;
         notifyFileSaved(filePath);
       } catch (error) {
         logger.error('Error in FILE_CONTENT_SAVE_AS handler:', error);
+        logger.error('Error stack:', error.stack);
+
+        // Show user-facing error and keep dirty flag
+        showSaveError(mainWindowRef, error.message);
+        if (mainWindowRef) mainWindowRef.setDocumentEdited(true);
       }
     }
   );
@@ -84,8 +132,12 @@ function setupIpcHandlers(mainWindow) {
  */
 async function handleOpenFile(mainWindow, filePath) {
   try {
+    logger.info(`handleOpenFile called with: ${filePath}`);
     const content = await fileService.readFile(filePath);
     const filename = fileService.getFilename(filePath);
+
+    logger.info(`File read successfully, content length: ${content?.length}`);
+    logger.info(`Sending FILE_OPENED event to renderer`);
 
     currentFile = filePath;
     setRepresentedFile(mainWindow, filePath);
@@ -96,6 +148,10 @@ async function handleOpenFile(mainWindow, filePath) {
     logger.info(`File opened successfully: ${filePath}`);
   } catch (error) {
     logger.error('Error opening file:', error);
+    logger.error('Error stack:', error.stack);
+
+    // Show user-facing error
+    showOpenError(mainWindow, error.message);
   }
 }
 
@@ -164,6 +220,44 @@ function setRepresentedFile(window, filePath) {
   if (process.platform === 'darwin' && window && !window.isDestroyed()) {
     window.setRepresentedFilename(filePath);
   }
+}
+
+/**
+ * Show user-facing save error dialog
+ * @param {BrowserWindow} window - Parent window
+ * @param {string} message - Error message
+ */
+function showSaveError(window, message) {
+  if (!window || window.isDestroyed()) return;
+
+  dialog.showMessageBox(window, {
+    type: 'error',
+    buttons: ['OK'],
+    title: 'Save Failed',
+    message: 'Unable to save file',
+    detail:
+      message ||
+      'An unknown error occurred while saving the file. Please try again or choose a different location.',
+  });
+}
+
+/**
+ * Show user-facing open error dialog
+ * @param {BrowserWindow} window - Parent window
+ * @param {string} message - Error message
+ */
+function showOpenError(window, message) {
+  if (!window || window.isDestroyed()) return;
+
+  dialog.showMessageBox(window, {
+    type: 'error',
+    buttons: ['OK'],
+    title: 'Open Failed',
+    message: 'Unable to open file',
+    detail:
+      message ||
+      'An unknown error occurred while opening the file. Please try again or choose a different file.',
+  });
 }
 
 module.exports = {
