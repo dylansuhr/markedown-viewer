@@ -19,6 +19,9 @@ const IPC_CHANNELS = {
 
   // Theme
   THEME_CHANGED: 'theme-changed',
+
+  // View Mode
+  SET_VIEW_MODE: 'set-view-mode',
 };
 
 // View Modes

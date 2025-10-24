@@ -101,4 +101,14 @@ contextBridge.exposeInMainWorld('electronAPI', {
       callback(isDark)
     );
   },
+
+  /**
+   * Listen for view mode changes from menu
+   * @param {Function} callback - Called with (mode)
+   */
+  onSetViewMode: (callback) => {
+    ipcRenderer.on(IPC_CHANNELS.SET_VIEW_MODE, (_event, mode) =>
+      callback(mode)
+    );
+  },
 });

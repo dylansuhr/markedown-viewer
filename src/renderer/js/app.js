@@ -40,6 +40,12 @@ const App = {
       document.body.classList.toggle('dark-mode', isDark);
     });
 
+    // Handle view mode changes from menu shortcuts
+    IPCService.onSetViewMode((mode) => {
+      console.log(`View mode changed via menu: ${mode}`);
+      Toolbar.setMode(mode);
+    });
+
     // Handle editor input
     Editor.onInput(() => {
       const mode = Toolbar.getMode();

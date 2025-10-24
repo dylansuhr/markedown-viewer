@@ -97,6 +97,43 @@ function buildMenu(handlers) {
   template.push({
     label: 'View',
     submenu: [
+      {
+        label: 'Edit Mode',
+        accelerator: 'CmdOrCtrl+1',
+        click: () => {
+          const { BrowserWindow } = require('electron');
+          const mainWindow = BrowserWindow.getFocusedWindow();
+          if (mainWindow) {
+            const { IPC_CHANNELS } = require('../../shared/constants');
+            mainWindow.webContents.send(IPC_CHANNELS.SET_VIEW_MODE, 'edit');
+          }
+        },
+      },
+      {
+        label: 'Preview Mode',
+        accelerator: 'CmdOrCtrl+2',
+        click: () => {
+          const { BrowserWindow } = require('electron');
+          const mainWindow = BrowserWindow.getFocusedWindow();
+          if (mainWindow) {
+            const { IPC_CHANNELS } = require('../../shared/constants');
+            mainWindow.webContents.send(IPC_CHANNELS.SET_VIEW_MODE, 'preview');
+          }
+        },
+      },
+      {
+        label: 'Split Mode',
+        accelerator: 'CmdOrCtrl+3',
+        click: () => {
+          const { BrowserWindow } = require('electron');
+          const mainWindow = BrowserWindow.getFocusedWindow();
+          if (mainWindow) {
+            const { IPC_CHANNELS } = require('../../shared/constants');
+            mainWindow.webContents.send(IPC_CHANNELS.SET_VIEW_MODE, 'split');
+          }
+        },
+      },
+      { type: 'separator' },
       ...(process.env.NODE_ENV === 'development'
         ? [
             { role: 'reload' },

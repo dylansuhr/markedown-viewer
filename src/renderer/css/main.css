@@ -140,6 +140,13 @@ body {
   flex: 1;
   padding: 20px;
   overflow-y: auto;
+  transition: opacity 0.2s ease;
+}
+
+.editor-pane.hidden,
+.preview-pane.hidden {
+  opacity: 0;
+  pointer-events: none;
 }
 
 .editor-pane {
@@ -153,7 +160,7 @@ body {
 }
 
 .hidden {
-  display: none;
+  display: none !important;
 }
 
 .divider {

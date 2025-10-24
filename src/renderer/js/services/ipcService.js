@@ -89,6 +89,14 @@ function onThemeChanged(callback) {
   electronAPI.onThemeChanged(callback);
 }
 
+/**
+ * Register callback for view mode changes from menu
+ * @param {Function} callback - Called with (mode)
+ */
+function onSetViewMode(callback) {
+  electronAPI.onSetViewMode(callback);
+}
+
 // Expose to window for use by other modules
 window.IPCService = {
   saveFile,
@@ -101,4 +109,5 @@ window.IPCService = {
   openPath,
   showError,
   onThemeChanged,
+  onSetViewMode,
 };
